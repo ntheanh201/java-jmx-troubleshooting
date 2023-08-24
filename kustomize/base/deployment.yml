@@ -21,11 +21,11 @@ spec:
           ports:
             - containerPort: 8080
               name: tcp
-            - containerPort: 9000
+            - containerPort: 9090
               name: jmx
           env:
             - name: JAVA_OPTS
-              value: -Xms3g -Xmx3g -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError -Dlog4j2.formatMsgNoLookups=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9000 -Dcom.sun.management.jmxremote.rmi.port=9000 -Djava.rmi.server.hostname=127.0.0.1
+              value: -Xms3g -Xmx3g -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError -Dlog4j2.formatMsgNoLookups=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.rmi.port=9090 -Djava.rmi.server.hostname=127.0.0.1
           readinessProbe:
             periodSeconds: 20
             timeoutSeconds: 5
@@ -37,15 +37,21 @@ spec:
             timeoutSeconds: 5
             tcpSocket:
               port: tcp
+        - name: "exporter-container"
+          image: "bitnami/jmx-exporter:latest"
+          imagePullPolicy:
+          command:
+            - sh
+            - -c
+            - -x
+            - java -jar jmx_prometheus_httpserver.jar 9092 /tmp/jmx-config.yaml
+          ports:
+            name: exporter-port
+            containerPort: 9092
           volumeMounts:
-            - name: temp
-              mountPath: "/tmp"
-        - name: jmxpromo
-          image: flokkr/jmxpromo-sidecar
-          volumeMounts:
-            - name: temp
-              mountPath: "/tmp"
+            name: configmap-jmx
+            mountPath: /tmp
       volumes:
-        - name: temp
-          emptyDir:
-            medium: Memory
+        name: configmap-jmx
+        configMap:
+          name: jmx-configmap

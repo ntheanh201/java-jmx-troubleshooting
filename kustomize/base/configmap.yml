@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jmx-configmap
+  labels:
+    app: java-jmx
+data:
+  jmx-config.yaml: |
+    --- 
+    jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:9090/jmxrmi 
+    ssl: false 
+    rules: 
+    - pattern: '.*'
