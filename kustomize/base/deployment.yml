@@ -13,6 +13,7 @@ spec:
       labels:
         app: java-jmx
     spec:
+      shareProcessNamespace: true
       containers:
         - name: tomcat
           image: tomcat
@@ -36,3 +37,15 @@ spec:
             timeoutSeconds: 5
             tcpSocket:
               port: tcp
+          volumeMounts:
+            - name: temp
+              mountPath: "/tmp"
+        - name: jmxpromo
+          image: flokkr/jmxpromo-sidecar
+          volumeMounts:
+            - name: temp
+              mountPath: "/tmp"
+      volumes:
+        - name: temp
+          emptyDir:
+            medium: Memory
