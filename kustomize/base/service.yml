@@ -15,3 +15,6 @@ spec:
     port: 9090
     targetPort: 9090
     nodePort: 30081
+  - name: exporter-port
+    port: 9092
+    nodePort: 30082
