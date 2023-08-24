@@ -46,12 +46,12 @@ spec:
             - -x
             - java -jar jmx_prometheus_httpserver.jar 9092 /tmp/jmx-config.yaml
           ports:
-            name: exporter-port
-            containerPort: 9092
+            - name: exporter-port
+              containerPort: 9092
           volumeMounts:
-            name: configmap-jmx
-            mountPath: /tmp
+            - name: configmap-jmx
+              mountPath: /tmp
       volumes:
-        name: configmap-jmx
-        configMap:
-          name: jmx-configmap
+        - name: configmap-jmx
+          configMap:
+            name: jmx-configmap
