@@ -4,8 +4,12 @@ metadata:
   name: java-jmx
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: java-jmx
   template:
     metadata:
+      name: java-jmx
       labels:
         app: java-jmx
     spec:
