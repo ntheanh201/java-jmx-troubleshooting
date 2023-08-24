@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-jmx
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: java-jmx
+    spec:
+      containers:
+        - name: tomcat
+          image: tomcat
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: tcp
+            - containerPort: 9000
+              name: jmx
+          env:
+            - name: JAVA_OPTS
+              value: -Xms3g -Xmx3g -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError -Dlog4j2.formatMsgNoLookups=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.port=9000 -Dcom.sun.management.jmxremote.rmi.port=9000
+          readinessProbe:
+            periodSeconds: 20
+            timeoutSeconds: 5
+            tcpSocket:
+              port: tcp
+          livenessProbe:
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 5
+            tcpSocket:
+              port: tcp

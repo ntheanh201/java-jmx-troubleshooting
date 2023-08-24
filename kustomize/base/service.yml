@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: java-jmx-svc
+spec:
+  selector:
+    app: java-jmx
+  type: NodePort
+  ports:
+  - name: tcp
+    port: 80
+    targetPort: 8080
+    nodePort: 32001
+  - name: jmx
+    port: 9000
+    targetPort: 9000
+    nodePort: 32000  
